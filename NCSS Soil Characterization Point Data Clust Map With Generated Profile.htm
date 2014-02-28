@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="keywords" content="USDA, NRCS, Pedons, Soil, Lab, Samples, Cluster, Leaflet, Map, Marker Cluster, NSSC, KSSL, NCSS Soil Characterization">
+<meta name="author" content="Jason Nemecek">
+<meta name="contributors" content="Jason Nemecek, Paul Finnell, Dylan Beaudette, Kevin Godsey, Wayne Gabriel, Dave Hoover">
+<title>NCSS Soil Characterization Point Data Clust Map With Generated Profile</title>
+<link rel="shortcut icon" type="image/ico" href="http://www.usda.gov/USDAGOV30-theme/themes/html/USDAGOV30-theme/favicon.ico"/>
+<link rel="stylesheet" href="../LEAFLET_KSSL_02092014/css/screen.css" />
+<link rel="stylesheet" href="../LEAFLET_KSSL_02092014/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="../LEAFLET_KSSL_02092014/dist/MarkerCluster.Default.css" />
+<link rel="stylesheet" href="../LEAFLET_KSSL_02092014/dist/leaflet.css" />
+		<script src="../LEAFLET_KSSL_02092014/dist/leaflet.js"></script>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+
+
+	<script src="../LEAFLET_KSSL_02092014/dist/leaflet.markercluster-src.js"></script>
+	
+	<script src="../LEAFLET_KSSL_02092014/data/KSSL.50000.1.js"></script>
+	<script src="../LEAFLET_KSSL_02092014/data/KSSL.50000.2.js"></script>
+<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%, width: 100%;
+		}
+		.overlay {
+			position:absolute; 
+			padding: 6px 8px;
+			font: 14px/16px Arial, Helvetica, sans-serif;
+			color: #223;
+			background-color:rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+		.title {
+			text-align:center;
+			top:10px;
+			right:20%;
+			left:20%;
+		}
+		.footer {
+			bottom:10px;
+			left:10px;
+		}
+		.box {
+			bottom:90px;
+			left:90px;
+		}
+	</style>
+</head>
+<body>
+
+    <div id="progress"><div id="progress-bar"></div></div>
+	<div id="map"></div>
+	<div class="overlay title">NCSS Soil Characterization Point Data Cluster Map with Generated Profile</div>
+	<span>Mouse over a cluster to see the bounds of its children and click a cluster to zoom to those bounds</span>
+	<script type="text/javascript">
+	//<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
+	//<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
+			var cloudmadeUrl = 'http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png',
+			    cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade, Points &copy 2012 LINZ',
+			    cloudmade = L.tileLayer(cloudmadeUrl, { maxZoom: 17, attribution: cloudmadeAttribution }),
+			    latlng = L.latLng(26.770933, -41.992188);
+
+			var map = L.map('map', { center: latlng, zoom: 3, layers: [cloudmade] });
+
+			var progress = document.getElementById('progress');
+			var progressBar = document.getElementById('progress-bar');
+
+			function updateProgressBar(processed, total, elapsed, layersArray) {
+				if (elapsed > 1000) {
+					// if it takes more than a second to load, display the progress bar:
+					progress.style.display = 'block';
+					progressBar.style.width = Math.round(processed/total*100) + '%';
+				}
+
+				if (processed === total) {
+					//  all markers processed - hide the progress bar:
+					progress.style.display = 'none';
+				}
+			}
+
+			var markers = L.markerClusterGroup({ chunkedLoading: true, chunkProgress: updateProgressBar });
+
+			var markerList = [];
+
+			//console.log('start creating markers: ' + window.performance.now());
+
+			for (var i = 0; i < KSSLPoints.length; i++) {
+				var a = KSSLPoints[i];
+				var title = a[2];
+				var marker = L.marker(L.latLng(a[0], a[1]), { title: title });
+				marker.bindPopup(title);
+				markerList.push(marker);
+			}
+			for (var i = 0; i < KSSLPoints2.length; i++) {
+				var a = KSSLPoints[i];
+				var title = a[2];
+				var marker = L.marker(L.latLng(a[0], a[1]), { title: title });
+				marker.bindPopup(title);
+				markerList.push(marker);
+			}
+
+			//console.log('start clustering: ' + window.performance.now());
+
+			markers.addLayers(markerList);
+			map.addLayer(markers);
+
+			//console.log('end clustering: ' + window.performance.now());
+	</script>
+</body>
+</html>
